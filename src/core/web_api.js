@@ -1,4 +1,4 @@
-import Auth0 from 'auth0-js';
+import auth0 from 'auth0-js';
 
 class Auth0WebAPI {
   constructor() {
@@ -8,12 +8,11 @@ class Auth0WebAPI {
   }
 
   setupClient(lockID, clientID, domain, opts) {
-    this.clients[lockID] = new Auth0({
+    this.clients[lockID] = new auth0.WebAuth({
       clientID: clientID,
       domain: domain,
-      sendSDKClientInfo: true,
-      forceJSONP: false,
-      callbackURL: opts.redirectUrl,
+      _sendTelemetry: true,
+      redirectUri: opts.redirectUrl,
       responseMode: opts.responseMode,
       responseType: opts.responseType,
       __tenant: opts.overrides && opts.overrides.__tenant,
@@ -33,7 +32,12 @@ class Auth0WebAPI {
     const authOpts = this.authOpts[lockID];
     const f = loginCallback(!authOpts.popup, cb);
     const client = this.clients[lockID];
-    client.login({...options, ...authOpts, ...authParams}, f);
+
+    if (authOpts.popup) {
+      client.popup.login({...options, ...authOpts, ...authParams}, f)
+    }
+
+    client.redirect.login({...options, ...authOpts, ...authParams}, f);
   }
 
   signOut(lockID, query) {
@@ -86,16 +90,12 @@ class Auth0WebAPI {
     return this.clients[lockID].parseHash(decodeURIComponent(hash));
   }
 
-  getProfile(lockID, token, callback) {
-    return this.clients[lockID].getProfile(token, callback);
-  }
-
   getUserInfo(lockID, token, callback) {
-    return this.clients[lockID].getUserInfo(token, callback);
+    return this.clients[lockID].client.userInfo(token, callback);
   }
 
   getSSOData(lockID, ...args) {
-    return this.clients[lockID].getSSOData(...args);
+    return this.clients[lockID].client.getSSOData(...args);
   }
 
   getUserCountry(lockID, cb) {
