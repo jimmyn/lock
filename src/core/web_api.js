@@ -55,26 +55,25 @@ class Auth0WebAPI {
 
     // When needed, open popup for sso login immediately, otherwise it
     // may be blocked by the browser.
-    let win;
-    if (autoLogin && popup && sso) {
-      win = client._buildPopupWindow({});
+    if (autoLogin && popup) {
+      let popupHandler;
+      // Also, wrap callback in a function that closes the popup.
+      const f = (error, ...args) => {
+        if (error && popupHandler) {
+          popupHandler._current_popup.kill();
+        }
+
+        cb(error, ...args);
+      };
+
+      popupHandler = client.popup.preload();
+      options.popupHandler = popupHandler;
+      client.popup.signupAndLogin(options, f)
+    } else if (autoLogin) {
+      client.redirect.signupAndLogin(options, cb)
+    } else {
+      client.signup(options, cb);
     }
-
-    // Never allow automatic login and disable popup (since it is only
-    // needed when auth0.js handles the automatic login).
-    options.auto_login = false;
-    options.popup = false;
-
-    // Also, wrap callback in a function that closes the popup.
-    const f = (error, ...args) => {
-      if (error && win) {
-        win.kill();
-      }
-
-      cb(error, ...args);
-    };
-
-    client.signup(options, f);
   }
 
   resetPassword(lockID, options, cb) {

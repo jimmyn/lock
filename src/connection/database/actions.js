@@ -79,47 +79,27 @@ export function signUp(id) {
       if (error) {
         setTimeout(() => signUpError(id, error), 250);
       } else {
-        signUpSuccess(id);
+        signUpSuccess(id, ...args);
       }
     });
   });
 }
 
-function signUpSuccess(id) {
+function signUpSuccess(id, ...args) {
   const lock = read(getEntity, "lock", id);
 
   if (shouldAutoLogin(lock)) {
-    swap(updateEntity, "lock", id, m => m.set("signedUp", true));
-
-    // TODO: check options, redirect is missing
-    const options = {
-      connection: databaseConnectionName(lock),
-      username: c.email(lock),
-      password: c.password(lock)
-    };
-
-    return webApi.logIn(
-      id,
-      options,
-      l.auth.params(lock).toJS(),
-      (error, ...args) => {
-        if (error) {
-          setTimeout(() => autoLogInError(id, error), 250);
-        } else {
-          logInSuccess(id, ...args);
-        }
-      }
-    );
-  }
-
-  const autoclose = l.ui.autoclose(lock);
-
-  if (!autoclose) {
     swap(updateEntity, "lock", id, lock => l.setSubmitting(lock, false).set("signedUp", true));
+    logInSuccess(id, ...args);
   } else {
-    closeLock(id, false);
-  }
+    const autoclose = l.ui.autoclose(lock);
 
+    if (!autoclose) {
+      swap(updateEntity, "lock", id, lock => l.setSubmitting(lock, false).set("signedUp", true));
+    } else {
+      closeLock(id, false);
+    }
+  }
 }
 
 function signUpError(id, error) {
