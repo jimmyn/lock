@@ -1,4 +1,3 @@
-import auth0 from 'auth0-js';
 import Core from './core';
 import classic from './engine/classic';
 import css from '../css/index.styl';

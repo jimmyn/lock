@@ -58,25 +58,8 @@ class Auth0WebAPI {
     const { autoLogin } = options;
     delete options.autoLogin;
 
-    // TODO: investigate why can't we just delegate to auth0.js the
-    // automatic login (error handling maybe?).
-
-    // When needed, open popup for sso login immediately, otherwise it
-    // may be blocked by the browser.
     if (autoLogin && popup) {
-      let popupHandler;
-      // Also, wrap callback in a function that closes the popup.
-      const f = (error, ...args) => {
-        if (error && popupHandler) {
-          popupHandler._current_popup.kill();
-        }
-
-        cb(error, ...args);
-      };
-
-      popupHandler = client.popup.preload();
-      options.popupHandler = popupHandler;
-      client.popup.signupAndLogin(options, f)
+      client.popup.signupAndLogin(options, cb)
     } else if (autoLogin) {
       client.redirect.signupAndLogin(options, cb)
     } else {
