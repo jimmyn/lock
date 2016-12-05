@@ -8,15 +8,23 @@ class Auth0WebAPI {
   }
 
   setupClient(lockID, clientID, domain, opts) {
+
+    const default_telemetry = {
+      name: 'lock.js',
+      version: __VERSION__,
+      lib_version: auth0.version
+    };
+
     this.clients[lockID] = new auth0.WebAuth({
       clientID: clientID,
       domain: domain,
-      _sendTelemetry: true,
       redirectUri: opts.redirectUrl,
       responseMode: opts.responseMode,
       responseType: opts.responseType,
       __tenant: opts.overrides && opts.overrides.__tenant,
-      __token_issuer: opts.overrides && opts.overrides.__token_issuer
+      __token_issuer: opts.overrides && opts.overrides.__token_issuer,
+      _sendTelemetry: opts._sendTelemetry === false ? false : true,
+      _telemetryInfo: opts._telemetryInfo || default_telemetry
     });
 
     this.authOpts[lockID] = {
