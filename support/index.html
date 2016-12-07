@@ -16,7 +16,10 @@
     const cid = "ixeOHFhD7NSPxEQK6CFcswjUsa5YkcXS";
     const domain = "auth0-tests-lock.auth0.com";
     const options = {
-      rememberLastLogin: true
+      rememberLastLogin: true,
+      auth: {
+        redirect: false
+      }
     };
 
     const lock = new Auth0Lock(cid, domain, options);

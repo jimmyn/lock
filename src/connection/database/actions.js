@@ -85,20 +85,44 @@ export function signUp(id) {
   });
 }
 
-function signUpSuccess(id, ...args) {
+function signUpSuccess(id, result, popupHandler) {
   const lock = read(getEntity, "lock", id);
 
   if (shouldAutoLogin(lock)) {
-    swap(updateEntity, "lock", id, lock => l.setSubmitting(lock, false).set("signedUp", true));
-    logInSuccess(id, ...args);
-  } else {
-    const autoclose = l.ui.autoclose(lock);
+    swap(updateEntity, "lock", id, m => m.set("signedUp", true));
 
-    if (!autoclose) {
-      swap(updateEntity, "lock", id, lock => l.setSubmitting(lock, false).set("signedUp", true));
-    } else {
-      closeLock(id, false);
+    // TODO: check options, redirect is missing
+    const options = {
+      connection: databaseConnectionName(lock),
+      username: c.email(lock),
+      password: c.password(lock)
+    };
+
+    if (!!popupHandler) {
+      options.popupHandler = popupHandler;
     }
+
+    return webApi.logIn(
+      id,
+      options,
+      l.auth.params(lock).toJS(),
+      (error, ...args) => {
+        if (error) {
+          setTimeout(() => autoLogInError(id, error), 250);
+        } else {
+          logInSuccess(id, ...args);
+        }
+      }
+    );
+  }
+
+  const autoclose = l.ui.autoclose(lock);
+
+  if (!autoclose) {
+    swap(updateEntity, "lock", id, lock => l.setSubmitting(lock, false).set("signedUp", true));
+
+  } else {
+    closeLock(id, false);
   }
 }
 
@@ -111,12 +135,21 @@ function signUpError(id, error) {
     PasswordStrengthError: "password_strength_error"
   };
 
-  const errorKey = (error.code === "invalid_password"
+  var errorKey = (error.code === "invalid_password"
     && invalidPasswordKeys[error.details.name])
-    || error.code;
+    || error.code || error.error;
 
-  const errorMessage = i18n.str(m, ["error", "signUp", errorKey])
-    || i18n.str(m, ["error", "signUp", "lock.fallback"]);
+  var errorMessage;
+
+  if (errorKey === "a0.mfa_registration_required") {
+    errorKey = "lock.mfa_registration_required";
+
+    errorMessage = i18n.str(m, ["error", "login", errorKey])
+      || i18n.str(m, ["error", "login", "lock.fallback"]);
+  } else {
+    errorMessage = i18n.str(m, ["error", "signUp", errorKey])
+      || i18n.str(m, ["error", "signUp", "lock.fallback"]);
+  }
 
   swap(updateEntity, "lock", id, l.setSubmitting, false, errorMessage);
 }

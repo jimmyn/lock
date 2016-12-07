@@ -56,15 +56,12 @@ class Auth0WebAPI {
     const client = this.clients[lockID];
     const { popup, sso } = this.authOpts[lockID];
     const { autoLogin } = options;
+
     delete options.autoLogin;
 
-    if (autoLogin && popup) {
-      client.popup.signupAndLogin(options, cb)
-    } else if (autoLogin) {
-      client.redirect.signupAndLogin(options, cb)
-    } else {
-      client.signup(options, cb);
-    }
+    const popupHandler = (autoLogin && popup) ? client.popup.preload() : null;
+
+    client.signup(options, (err, result) => cb(err, result, popupHandler) );
   }
 
   resetPassword(lockID, options, cb) {

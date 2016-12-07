@@ -134,8 +134,8 @@ describe("mfa ro", function() {
         const error = new Error();
         error.error = "a0.mfa_registration_required";
 
-        webApi.logIn.yields(error);
-        stub(webApi, "signUp").yields();
+        // webApi.logIn.yields(error);
+        stub(webApi, "signUp").yields(error);
 
         this.lock = h.displayLock("single database", opts, done);
       });
@@ -145,7 +145,7 @@ describe("mfa ro", function() {
         this.lock.hide();
       });
 
-      it("show an error", function(done) {
+      it.only("show an error", function(done) {
         h.fillEmailInput(this.lock, "someone@example.com");
         h.fillPasswordInput(this.lock, "mYpass123");
         h.submitForm(this.lock);
