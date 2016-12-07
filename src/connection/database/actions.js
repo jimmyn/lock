@@ -135,21 +135,12 @@ function signUpError(id, error) {
     PasswordStrengthError: "password_strength_error"
   };
 
-  var errorKey = (error.code === "invalid_password"
+  const errorKey = (error.code === "invalid_password"
     && invalidPasswordKeys[error.details.name])
-    || error.code || error.error;
+    || error.code;
 
-  var errorMessage;
-
-  if (errorKey === "a0.mfa_registration_required") {
-    errorKey = "lock.mfa_registration_required";
-
-    errorMessage = i18n.str(m, ["error", "login", errorKey])
-      || i18n.str(m, ["error", "login", "lock.fallback"]);
-  } else {
-    errorMessage = i18n.str(m, ["error", "signUp", errorKey])
-      || i18n.str(m, ["error", "signUp", "lock.fallback"]);
-  }
+  const errorMessage = i18n.str(m, ["error", "signUp", errorKey])
+    || i18n.str(m, ["error", "signUp", "lock.fallback"]);
 
   swap(updateEntity, "lock", id, l.setSubmitting, false, errorMessage);
 }
