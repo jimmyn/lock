@@ -79,8 +79,7 @@
     "zuul-ngrok": "gnandretta/zuul-ngrok#upgrade-ngrok"
   },
   "dependencies": {
-    "auth0-js": "7.6.1",
-    "auth0-js": "v8.0.0-alpha.1",
+    "auth0-js": "v8.0.0-alpha.2",
     "blueimp-md5": "2.3.1",
     "fbjs": "^0.3.1",
     "immutable": "^3.7.3",
