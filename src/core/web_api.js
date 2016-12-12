@@ -8,7 +8,6 @@ class Auth0WebAPI {
   }
 
   setupClient(lockID, clientID, domain, opts) {
-
     const default_telemetry = {
       name: 'lock.js',
       version: __VERSION__,
@@ -39,7 +38,7 @@ class Auth0WebAPI {
     // TODO: for passwordless only, try to clean in auth0.js
     // client._shouldRedirect = redirect || responseType === "code" || !!redirectUrl;
     const authOpts = this.authOpts[lockID];
-    const f = loginCallback(!authOpts.popup, cb);
+    const f = loginCallback(!authOpts.popup && this.authOpts[lockID].legacyMode, cb);
     const auth0Client = this.clients[lockID];
 
     if (!options.username && !options.email) {
