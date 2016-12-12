@@ -40,15 +40,23 @@ class Auth0WebAPI {
     // client._shouldRedirect = redirect || responseType === "code" || !!redirectUrl;
     const authOpts = this.authOpts[lockID];
     const f = loginCallback(!authOpts.popup, cb);
-    const client = this.clients[lockID];
+    const auth0Client = this.clients[lockID];
 
-    if (!this.authOpts[lockID].legacyMode) {
+    if (!options.username && !options.email) {
+      if (authOpts.popup) {
+        auth0Client.popup.authorize({...options, ...authOpts, ...authParams}, f)
+      } else {
+        auth0Client.login({...options, ...authOpts, ...authParams}, f)
+      }
+    } else if (!this.authOpts[lockID].legacyMode) {
       options.realm = options.connection;
-      client.client.loginRealm({...options, ...authOpts, ...authParams}, f);
+      auth0Client.client.login({...options, ...authOpts, ...authParams}, f);
+    } else if (!sso && authOpts.popup) {
+      auth0Client.client.loginWithResourceOwner({...options, ...authOpts, ...authParams}, f)
     } else if (authOpts.popup) {
-      client.popup.login({...options, ...authOpts, ...authParams}, f)
+      auth0Client.popup.login({...options, ...authOpts, ...authParams}, f)
     } else {
-      client.redirect.login({...options, ...authOpts, ...authParams}, f);
+      auth0Client.redirect.login({...options, ...authOpts, ...authParams}, f);
     }
   }
 
