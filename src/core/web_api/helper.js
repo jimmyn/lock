@@ -1,61 +1,4 @@
-import auth0 from 'auth0-js';
-import Auth0LegacyAPIClient from './web_api/legacy_api'
-import Auth0APIClient from './web_api/p2_api'
-
-class Auth0WebAPI {
-  constructor() {
-    this.clients = {};
-  }
-
-  setupClient(lockID, clientID, domain, opts) {
-    if (opts.legacyMode) {
-      this.clients[lockID] = new Auth0APIClient(clientID, domain, opts);
-    } else {
-      this.clients[lockID] = new Auth0LegacyAPIClient(clientID, domain, opts);
-    }
-  }
-
-  logIn(lockID, options, authParams, cb) {
-    this.clients[lockID].logIn(options, authParams, cb);
-  }
-
-  signOut(lockID, query) {
-    this.clients[lockID].logout(query);
-  }
-
-  signUp(lockID, options, cb) {
-    this.clients[lockID].signUp(options, cb);
-  }
-
-  resetPassword(lockID, options, cb) {
-    this.clients[lockID].changePassword(options, cb);
-  }
-
-  startPasswordless(lockID, options, cb) {
-    this.clients[lockID].startPasswordless(options, cb);
-  }
-
-  parseHash(lockID, hash = '') {
-    return this.clients[lockID].parseHash(decodeURIComponent(hash));
-  }
-
-  getUserInfo(lockID, token, callback) {
-    return this.clients[lockID].getUserInfo(token, callback);
-  }
-
-  getSSOData(lockID, ...args) {
-    return this.clients[lockID].getSSOData(...args);
-  }
-
-  getUserCountry(lockID, cb) {
-    return this.clients[lockID].getUserCountry(cb);
-  }
-}
-
-export default new Auth0WebAPI();
-<<<<<<< a1070ebfc887a0c369f1c8c8dacdb221a0d12f5c
-
-function normalizeError(error) {
+export function normalizeError(error) {
   if (!error) {
     return error;
   }
@@ -158,8 +101,8 @@ function normalizeError(error) {
   }
 
   const result = {
-    error: error.details ? error.details.error : (error.code || error.statusCode || error.error),
-    description: error.details ? error.details.error_description : (error.error_description || error.description || error.error)
+    error: error.details ? error.details.error : (error.statusCode || error.error),
+    description: error.details ? error.details.error_description : (error.error_description || error.error)
   }
 
   // result is used for passwordless and error for database.
@@ -168,10 +111,8 @@ function normalizeError(error) {
     : result;
 }
 
-function loginCallback(redirect, cb) {
+export function loginCallback(redirect, cb) {
   return redirect
     ? error => cb(normalizeError(error))
     : (error, result) => cb(normalizeError(error), result);
 }
-=======
->>>>>>> move legacy and p2 to different clases
