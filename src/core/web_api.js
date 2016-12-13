@@ -28,7 +28,7 @@ class Auth0WebAPI {
   }
 
   resetPassword(lockID, options, cb) {
-    this.clients[lockID].changePassword(options, cb);
+    this.clients[lockID].changePassword(options, (err, data) => cb(err, data && data.countryCode));
   }
 
   startPasswordless(lockID, options, cb) {
