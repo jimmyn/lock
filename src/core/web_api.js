@@ -9,9 +9,9 @@ class Auth0WebAPI {
 
   setupClient(lockID, clientID, domain, opts) {
     if (opts.legacyMode) {
-      this.clients[lockID] = new Auth0APIClient(clientID, domain, opts);
-    } else {
       this.clients[lockID] = new Auth0LegacyAPIClient(clientID, domain, opts);
+    } else {
+      this.clients[lockID] = new Auth0APIClient(clientID, domain, opts);
     }
   }
 

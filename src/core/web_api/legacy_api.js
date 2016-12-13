@@ -41,7 +41,7 @@ class Auth0LegacyAPIClient {
       } else {
         auth0Client.login({...options, ...this.authOpt, ...authParams}, f)
       }
-    } else if (!sso && this.authOpt.popup) {
+    } else if (!this.authOpt.sso && this.authOpt.popup) {
       auth0Client.client.loginWithResourceOwner({...options, ...this.authOpt, ...authParams}, f)
     } else if (this.authOpt.popup) {
       auth0Client.popup.login({...options, ...this.authOpt, ...authParams}, f)

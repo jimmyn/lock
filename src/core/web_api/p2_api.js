@@ -12,7 +12,7 @@ class Auth0APIClient {
       lib_version: auth0.version
     };
 
-    this.clients = new auth0.WebAuth({
+    this.client = new auth0.WebAuth({
       clientID: clientID,
       domain: domain,
       redirectUri: opts.redirectUrl,
@@ -22,7 +22,7 @@ class Auth0APIClient {
       _telemetryInfo: opts._telemetryInfo || default_telemetry
     });
 
-    this.authOpts = {
+    this.authOpt = {
       popup: !opts.redirect,
       popupOptions: opts.popupOptions,
       sso: opts.sso
