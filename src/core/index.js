@@ -213,7 +213,7 @@ function extractAuthOptions(options) {
 
   connectionScopes = typeof connectionScopes === "object" ? connectionScopes : {};
   params = typeof params === "object" ? params : {};
-  redirectUrl = typeof redirectUrl === "string" && redirectUrl ? redirectUrl : undefined;
+  redirectUrl = typeof redirectUrl === "string" && redirectUrl ? redirectUrl : window.location.href;
   redirect = typeof redirect === "boolean" ? redirect : true;
   responseMode = typeof responseMode === "string" ? responseMode : undefined;
   responseType = typeof responseType === "string" ? responseType : redirectUrl ? "code" : "token";
