@@ -37,7 +37,7 @@ class Auth0WebAPI {
   }
 
   resetPassword(lockID, options, cb) {
-    this.clients[lockID].changePassword(options, (err, data) => cb(err, data && data.countryCode));
+    this.clients[lockID].resetPassword(options, cb);
   }
 
   startPasswordless(lockID, options, cb) {
@@ -57,7 +57,7 @@ class Auth0WebAPI {
   }
 
   getUserCountry(lockID, cb) {
-    return this.clients[lockID].getUserCountry(cb);
+    return this.clients[lockID].getUserCountry((err, data) => cb(err, data && data.countryCode));
   }
 }
 
