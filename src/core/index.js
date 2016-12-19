@@ -34,7 +34,6 @@ export function setup(id, clientID, domain, options, hookRunner, emitEventFn) {
     emitEventFn: emitEventFn,
     hookRunner: hookRunner,
     useTenantInfo: options.__useTenantInfo || false,
-    legacyMode: options.legacyMode === false ? false : true,
     hashCleanup: options.hashCleanup === false ? false : true,
     allowedConnections: Immutable.fromJS(options.allowedConnections || []),
     ui: extractUIOptions(id, options),
@@ -486,10 +485,6 @@ export function hasStopped(m) {
 
 export function hashCleanup(m) {
   return get(m, "hashCleanup");
-}
-
-export function legacyMode(m) {
-  return get(m, "legacyMode");
 }
 
 export function emitHashParsedEvent(m, parsedHash) {

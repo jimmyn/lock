@@ -13,6 +13,8 @@ class Auth0WebAPI {
     // when it is used on on the hosted login page, it shouldn't use popup mode
     opts.popup = hostedLoginPage ? opts.popup : false;
 
+    opts.legacyMode = opts.legacyMode === fase ? false : true;
+
     // when it is used on on the hosted login page, it should use the legacy mode
     // (usernamepassword/login) in order to continue the transaction after authentication
     if (hostedLoginPage || opts.legacyMode) {
