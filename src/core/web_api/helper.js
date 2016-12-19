@@ -71,23 +71,21 @@ export function normalizeError(error) {
     // }
 
     // Social cancel permissions or unknown error
-    if (!error.details
-        || !error.details.error_description
-        || error.details.error_description === "access_denied") {
+    if (!error.description || error.description === "access_denied") {
 
       return {
         code: "lock.unauthorized",
         error: "lock.unauthorized",
-        description: (error.details && error.details.error_description) || "Permissions were not granted."
+        description: error.description || "Permissions were not granted."
       }
     }
 
     // Special case for custom rule error
-    if (error.details.error_description === "user is blocked") {
+    if (error.description === "user is blocked") {
       return {
         code: "blocked_user",
         error: "blocked_user",
-        description: error.details.error_description
+        description: error.description
       };
     }
 
@@ -95,14 +93,14 @@ export function normalizeError(error) {
     return {
       code: "rule_error",
       error: "rule_error",
-      description: error.details.error_description
+      description: error.description
     };
 
   }
 
   const result = {
-    error: error.details ? error.details.error : (error.statusCode || error.error),
-    description: error.details ? error.details.error_description : (error.error_description || error.error)
+    error: error.code ? error.code : (error.statusCode || error.error),
+    description: error.description || error.code
   }
 
   // result is used for passwordless and error for database.
