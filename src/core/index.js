@@ -201,6 +201,7 @@ export const auth = {
 
 function extractAuthOptions(options) {
   let {
+    audience,
     connectionScopes,
     params,
     redirect,
@@ -210,6 +211,7 @@ function extractAuthOptions(options) {
     sso
   } = options.auth || {};
 
+  audience = typeof audience === "string" ? audience : undefined;
   connectionScopes = typeof connectionScopes === "object" ? connectionScopes : {};
   params = typeof params === "object" ? params : {};
   redirectUrl = typeof redirectUrl === "string" && redirectUrl ? redirectUrl : window.location.href;
@@ -224,6 +226,7 @@ function extractAuthOptions(options) {
   }
 
   return Immutable.fromJS({
+    audience,
     connectionScopes,
     params,
     redirect,

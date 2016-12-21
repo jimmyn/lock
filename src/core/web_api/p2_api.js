@@ -15,6 +15,7 @@ class Auth0APIClient {
     this.client = new auth0.WebAuth({
       clientID: clientID,
       domain: domain,
+      audience: opts.audience,
       redirectUri: opts.redirectUrl,
       responseMode: opts.responseMode,
       responseType: opts.responseType,
