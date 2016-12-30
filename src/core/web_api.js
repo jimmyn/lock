@@ -13,11 +13,11 @@ class Auth0WebAPI {
     // when it is used on on the hosted login page, it shouldn't use popup mode
     opts.popup = hostedLoginPage ? opts.popup : false;
 
-    opts.legacyMode = opts.legacyMode === false ? false : true;
+    opts.oidcConformant = opts.oidcConformant || false;
 
     // when it is used on on the hosted login page, it should use the legacy mode
     // (usernamepassword/login) in order to continue the transaction after authentication
-    if (hostedLoginPage || opts.legacyMode) {
+    if (hostedLoginPage || !opts.oidcConformant) {
       this.clients[lockID] = new Auth0LegacyAPIClient(clientID, domain, opts);
     } else {
       this.clients[lockID] = new Auth0APIClient(clientID, domain, opts);
