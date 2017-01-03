@@ -19,7 +19,9 @@ class Auth0LegacyAPIClient {
       responseMode: opts.responseMode,
       responseType: opts.responseType,
       _sendTelemetry: opts._sendTelemetry === false ? false : true,
-      _telemetryInfo: opts._telemetryInfo || default_telemetry
+      _telemetryInfo: opts._telemetryInfo || default_telemetry,
+      __tenant: opts.overrides && opts.overrides.__tenant,
+      __token_issuer: opts.overrides && opts.overrides.__token_issuer
     });
 
     this.authOpt = {
