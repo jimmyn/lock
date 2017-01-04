@@ -28,7 +28,9 @@ class Auth0APIClient {
     this.authOpt = {
       popup: !opts.redirect,
       popupOptions: opts.popupOptions,
-      sso: opts.sso
+      sso: opts.sso,
+      nonce: opts.nonce,
+      state: opts.state
     };
   }
 
@@ -74,7 +76,9 @@ class Auth0APIClient {
 
   parseHash(hash = '', cb) {
     return this.client.parseHash({
-      hash: decodeURIComponent(hash)
+      hash: decodeURIComponent(hash),
+      nonce: this.authOpt.nonce,
+      state: this.authOpt.state
     }, cb);
   }
 
