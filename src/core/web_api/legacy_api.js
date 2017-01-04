@@ -41,14 +41,14 @@ class Auth0LegacyAPIClient {
       if (this.authOpt.popup) {
         auth0Client.popup.authorize({...options, ...this.authOpt, ...authParams}, f)
       } else {
-        auth0Client.login({...options, ...this.authOpt, ...authParams}, f)
+        auth0Client.authorize({...options, ...this.authOpt, ...authParams}, f)
       }
     } else if (!this.authOpt.sso && this.authOpt.popup) {
       auth0Client.client.loginWithResourceOwner({...options, ...this.authOpt, ...authParams}, f)
     } else if (this.authOpt.popup) {
-      auth0Client.popup.login({...options, ...this.authOpt, ...authParams}, f)
+      auth0Client.popup.loginWithCredentials({...options, ...this.authOpt, ...authParams}, f)
     } else {
-      auth0Client.redirect.login({...options, ...this.authOpt, ...authParams}, f);
+      auth0Client.redirect.loginWithCredentials({...options, ...this.authOpt, ...authParams}, f);
     }
   }
 
@@ -75,8 +75,10 @@ class Auth0LegacyAPIClient {
     this.client.startPasswordless(options, err => cb(normalizeError(err)));
   }
 
-  parseHash(hash = '') {
-    return this.client.parseHash(decodeURIComponent(hash));
+  parseHash(hash = '', cb) {
+    return this.client.parseHash({
+      hash: decodeURIComponent(hash)
+    }, cb);
   }
 
   getUserInfo(token, callback) {

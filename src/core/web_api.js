@@ -44,8 +44,8 @@ class Auth0WebAPI {
     this.clients[lockID].startPasswordless(options, cb);
   }
 
-  parseHash(lockID, hash = '') {
-    return this.clients[lockID].parseHash(decodeURIComponent(hash));
+  parseHash(lockID, hash = '', cb) {
+    return this.clients[lockID].parseHash(decodeURIComponent(hash), cb);
   }
 
   getUserInfo(lockID, token, callback) {

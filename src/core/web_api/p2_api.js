@@ -41,7 +41,7 @@ class Auth0APIClient {
       if (this.authOpt.popup) {
         this.client.popup.authorize({...options, ...this.authOpt, ...authParams}, f)
       } else {
-        this.client.login({...options, ...this.authOpt, ...authParams}, f)
+        this.client.authorize({...options, ...this.authOpt, ...authParams}, f)
       }
     } else {
       options.realm = options.connection;
@@ -72,8 +72,10 @@ class Auth0APIClient {
     this.client.startPasswordless(options, err => cb(normalizeError(err)));
   }
 
-  parseHash(lockID, hash = '') {
-    return this.client.parseHash(decodeURIComponent(hash));
+  parseHash(hash = '', cb) {
+    return this.client.parseHash({
+      hash: decodeURIComponent(hash)
+    }, cb);
   }
 
   getUserInfo(token, callback) {
